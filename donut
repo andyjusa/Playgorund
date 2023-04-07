@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <math.h>
+
+int main() {
+  float a, b, i, j, z[1760];
+  char screen[1760];
+
+  printf("\x1b[2J");
+
+  while(1) {
+    memset(screen, 32, 1760);
+    memset(z, 0, 7040);
+
+    for (j = 0; j < 6.28; j += 0.07) {
+      for (i = 0; i < 6.28; i += 0.02) {
+        float sin_i = sin(i);
+        float cos_j = cos(j);
+        float sin_a = sin(a);
+        float sin_j = sin(j);
+        float cos_a = cos(a);
+        float cos_i = cos(i);
+
+        b = sin_j + 2;
+        float p = sin_i * b;
+        float w = cos_j + 2;
+        float d = 1 / (p * w * sin_a + cos_a);
+        float x = (int)(40 + 30 * d * (cos_i * b * cos_a - sin_j * sin_a));
+        float y = (int)(12 + 15 * d * (sin_j * cos_a + p * sin_a));
+        int o = x + 80 * y;
+        float N = -d * sin_i * sin_j;
+        if (y < 22 && y >= 0 && x >= 0 && x < 79 && d > z[o]) {
+          z[o] = d;
+          screen[o] = ".,-~:;=!*#$@"[(int)(N > 0 ? N : 0)];
+        }
+      }
+    }
+
+    printf("\x1b[d");
+    for (int k = 0; k < 1761; k++) {
+      putchar(k % 80 ? screen[k] : 10);
+      a += 0.00004;
+    }
+  }
+}
